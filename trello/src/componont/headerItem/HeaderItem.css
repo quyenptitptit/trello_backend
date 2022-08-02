@@ -1,0 +1,9 @@
+.header_item p {
+    padding-right: 5px;
+    margin: 5px;
+}
+
+.header_item:hover {
+    background-color: rgb(126, 177, 221);
+    border-radius: 5px;
+}

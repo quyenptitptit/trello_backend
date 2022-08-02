@@ -1,0 +1,121 @@
+.list {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: rgba(238, 237, 237);
+    height: fit-content;
+    display: inline-block;
+    box-sizing: border-box;
+    font-size: 110%;
+    position: relative;
+    width: 350px;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+.list_title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 110%;
+    padding: 10px;
+    align-items: center;
+    height: 40px;
+    padding: 10px;
+    font-weight: 500;
+}
+
+.list_title-text {
+    padding: 10px;
+}
+
+.list_title-text p {
+    width: 220px;
+    cursor: pointer;
+}
+
+.list_title-icon {
+    padding: 10px;
+    color: rgb(25, 122, 219);
+}
+
+.list_title-icon button {
+    border: none;
+}
+
+.list_title-icon-delete {
+    cursor: pointer;
+    font-size: 200%;
+    color: #026AA7;
+}
+
+
+.render_card {
+    display: block;
+    overflow-y: auto;
+    height: auto;
+    max-height: 530px;
+}
+
+.list_form {
+    display: block;
+    background-color: rgb(238, 237, 237);
+    border-radius: 5px;
+}
+
+.list_form-update {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.list_input-update {
+    padding: 5px;
+    border: 3px solid #51ade2;
+    border-radius: 5px;
+    margin-right: 5px;
+    width: 220px;
+    font-size: 110%;
+}
+
+.list_btn-update {
+    font-size: 110%;
+    padding: 10px;
+    border: none;
+    background-color: #026AA7;
+    color: white;
+    border-radius: 5px
+}
+
+.list_input-addCard {
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid rgb(25, 122, 219);
+    border-radius: 5px;
+    font-size: 120%;
+    width: 94%;
+    box-sizing: border-box;
+}
+
+.list_btn-addCard{
+    font-size: 120%;
+    margin: 5px 10px 10px 10px;
+    padding: 10px;
+    border: none;
+    background-color: #026AA7;
+    color: white;
+    border-radius: 5px;
+}
+
+.add_card-false {
+    margin: 15px;
+    padding: 10px;
+}
+
+.add_card-false:hover {
+    background-color: rgb(236, 225, 225);
+    border-radius: 5px;
+}
+
+

@@ -1,0 +1,60 @@
+.card {
+    background-color: white;
+    margin: 15px;
+    border-radius: 5px;
+    position: relative;
+    user-select: none;
+    
+}
+
+.card_title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 110%;
+    padding: 10px;
+    align-items: center;
+    height: 40px;
+    padding: 10px;
+    word-wrap: break-word
+}
+
+.card_title p {
+    word-break: break-word;
+}
+
+.card_btn{
+    border: none;
+    background-color: white;
+    font-size: 100%;
+    padding: 7px;
+}
+
+.card_btn:hover {
+    background-color: rgba(238, 237, 237);
+    border-radius: 5px;
+}
+
+.card_form-update {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.card_input-update {
+    padding: 5px;
+    border: 1px solid #51ade2;
+    border-radius: 5px;
+    margin-right: 5px;
+    width: 220px;
+}
+
+.card_btn-save{ 
+    padding: 10px;
+    border: none;
+    background-color: #026AA7;
+    color: white;
+    border-radius: 5px
+}

@@ -1,0 +1,49 @@
+.content_header {
+    color: white;
+    font-size: 120%;
+    padding: 5px 30px;
+    display: flex;
+    justify-content: space-between;
+    height: 70px;
+    position: relative;
+}
+
+.content_header-start {
+    display: flex;
+}
+
+.content_header-icon {
+    margin: 15px 5px;
+    background-color: #90c0dd;
+}
+
+.content_header-different {
+    border-right: 1px solid white;
+    margin: 15px 8px;
+    opacity: 0.5;
+}
+
+.content_header-background {
+    background-color: #90c0dd;
+}
+
+.content_header-background p{
+    padding: 0px 5px;
+}
+
+.content_header-name {
+    margin: 15px 5px;
+}
+
+.content_header-person {
+    background-color: white;
+    color: black;
+}
+
+.content_header-person p {
+    padding-left: 5px;
+}
+
+.content_header-end {
+    display: flex;
+}
