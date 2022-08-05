@@ -1,7 +1,7 @@
 import React from 'react'
 import './Header.css'
 import '../trello/Trello.css'
-import HeaderItem from '../headerItem/HeaderItem'
+import HeaderItem from '../header-item/HeaderItem'
 import { ImTrello } from "@react-icons/all-files/im/ImTrello"
 import { BsSearch } from "@react-icons/all-files/bs/BsSearch"
 import { BsInfoCircle } from "@react-icons/all-files/bs/BsInfoCircle"

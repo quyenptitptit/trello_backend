@@ -1,20 +1,20 @@
 import { React, useState, useEffect } from 'react'
 import './ContentBody.css'
-import AddList from '../addList/AddList'
+import AddList from '../add-list/AddList'
 import List from '../list/List'
 import axios from 'axios'
 
 
 
 
-function ContentBody() {
-  const BASE_URL = 'http://localhost:8000/api/list'
-  const URL_CARD = 'http://localhost:8000/api/card'
-  const [lists, setLists] = useState([])
+function ContentBody({lists, setLists, boards, setBoards, load}) {
+  const BOARD_URL = 'http://localhost:8000/api/board'
+  const LIST_URL = 'http://localhost:8000/api/list'
+  const CARD_URL = 'http://localhost:8000/api/card'
 
   const createList = async newList => {
     try {
-      const res = await axios.post(`${BASE_URL}`, newList)
+      const res = await axios.post(`${LIST_URL}`, newList)
       // setLists([...lists, res.data])
       return res.data
     }
@@ -25,7 +25,7 @@ function ContentBody() {
 
   const removeList = async id => {
     try {
-      const res = await axios.delete(`${BASE_URL}/${id}`)
+      const res = await axios.delete(`${LIST_URL}/${id}`)
       setLists(lists.filter(list => list._id !== id))
       return res.data
     }
@@ -36,7 +36,7 @@ function ContentBody() {
 
   const updateList = async (id, updtedTitle) => {
     try {
-      await axios.put(`${BASE_URL}/${id}`, { title: updtedTitle })
+      await axios.put(`${LIST_URL}/${id}`, { title: updtedTitle })
       const updatedLists = lists.map(list => {
         if (list._id === id) {
           return { ...list, title: updtedTitle };
@@ -52,7 +52,7 @@ function ContentBody() {
 
   const addCard = async newCard => {
     try {
-      const res = await axios.post(`${URL_CARD}`, newCard)
+      const res = await axios.post(`${CARD_URL}`, newCard)
       return res.data
     }
     catch (e) {
@@ -62,7 +62,7 @@ function ContentBody() {
 
   const removeCard = async id => {
     try {
-      const res = await axios.delete(`${URL_CARD}/${id}`)
+      const res = await axios.delete(`${CARD_URL}/${id}`)
       const remove = lists.map(list => {
         const newCard = list.card.filter(card => card.id !== id)
         return { ...list, card: newCard }
@@ -77,7 +77,7 @@ function ContentBody() {
 
   const updateCard = async (id, newNameCard) => {
     try {
-      await axios.put(`${URL_CARD}/${id}`, { nameCard: newNameCard })
+      await axios.put(`${CARD_URL}/${id}`, { nameCard: newNameCard })
       const updatedCard = lists.map(list => {
         const newCard = list.card.map(card => {
           if (card.id === id)
@@ -96,24 +96,9 @@ function ContentBody() {
   }
 
 
-  // load()
-  const load = async e => {
-    try {
-      const res = await axios.get(`${BASE_URL}`)
-      setLists(res.data)
-      console.log('list', lists)
-      console.log('data', res.data)
-    }
-    catch (e) {
-      console.log(e)
-    }
-  }
-  useEffect(() => {
-    load()
-  }, [lists.title])
 
   const renderList = lists.map((list, idx) => (
-    <List load={load} key={idx} list={list} addCard={addCard} updateList={updateList} updateCard={updateCard} removeList={removeList} removeCard={removeCard} />
+    <List load={load} key={idx} list={list} addCard={addCard} updateList={updateList} updateCard={updateCard} removeList={removeList} removeCard={removeCard} boards={boards} setBoards={setBoards} />
   ))
 
   return (

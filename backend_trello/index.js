@@ -8,6 +8,7 @@ const app = express()
 
 const listRouter = require('./routes/listRoute')
 const cardRouter = require('./routes/cardRoute')
+const boardRouter = require('./routes/boardRoute')
 
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(cors())
@@ -24,6 +25,7 @@ app.get('/api', (req, res) => {
 
 app.use('/api/list', listRouter)
 app.use('/api/card', cardRouter)
+app.use('/api/board', boardRouter)
 
 app.listen(8000, () => {
     console.log('Port 8000 is running')

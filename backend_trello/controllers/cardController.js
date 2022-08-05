@@ -38,24 +38,6 @@ const cardController = {
         }
     },
 
-    updateIdxCard: async (req, res) => {
-        try {
-            const card = await Card.findById(req.params.id)
-            await card.updateOne({$set: {card: req.body}})
-            if (req.body.list) {
-                const list = await List.findById(req.body.list)
-                await list.updateOne({ $push: { card: card } })
-                await List.deleteOne(
-                    {}
-                )
-            }
-            res.status(200).json(card)
-        }
-        catch (e) {
-            res.status(500).json(e)
-        }
-    },
-
     deleteCard: async (req, res) => {
         try {
             await List.updateMany(

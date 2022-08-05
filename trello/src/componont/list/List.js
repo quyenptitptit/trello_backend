@@ -49,18 +49,18 @@ function List({ list, load, addCard, updateList, updateCard, removeList, removeC
 
 
   return (
-    <div id={list.id} className='list'>
+    <div id={list._id} className='list'>
       {isEditing ?
         <div className="list_title">
           <form className="list_form-update" onSubmit={handleClickUpdateList}>
-            <input className='list_input-update' onChange={handleChangeUpdateList} value={title} type="text" />
+            <input className='list_input-update' autoFocus onChange={handleChangeUpdateList} value={title} type="text" />
             <button className='list_btn-update'>Save</button>
           </form>
         </div>
         :
         <div className='list_title'>
           <div className='list_title-text'>
-            <p id='list_title-text-p' onClick={handleClickUpdateList}>{list.title}</p>
+            <p id='list_title-text-p' onClick={handleClickUpdateList} value={list.title}>{list.title}</p>
           </div>
           <div className='list_title-icon'>
             <button onClick={handleClickDeleteList}><TiDelete className='list_title-icon-delete' /></button>
@@ -76,7 +76,8 @@ function List({ list, load, addCard, updateList, updateCard, removeList, removeC
             value={inputCard}
             onChange={handleChangeAddCard}
             placeholder='Enter a title for this tag...'
-            className='list_input-addCard' /><br />
+            className='list_input-addCard'
+            autoFocus /><br />
           <button className='list_btn-addCard'>Add card</button>
         </form>
         :

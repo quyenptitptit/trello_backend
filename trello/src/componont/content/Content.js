@@ -1,15 +1,15 @@
 import React from 'react'
-import ContentHeader from '../contentHeader/ContentHeader'
-import ContentBody from '../contentBody/ContentBody'
+import ContentHeader from '../content-header/ContentHeader'
+import ContentBody from '../content-body/ContentBody'
 import './Content.css'
 
 
 
-function Content() {
+function Content({lists, setLists, boards, setBoards, load}) {
   return (
     <div className='content'>
         <ContentHeader />
-        <ContentBody />
+        <ContentBody lists={lists} setLists={setLists} boards={boards} setBoards={setBoards} load={load} />
     </div>
   )
 }

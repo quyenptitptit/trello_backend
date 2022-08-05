@@ -1,5 +1,17 @@
 const mongoose = require('mongoose')
 
+const boardSchema = new mongoose.Schema({
+    title: {
+        type: String
+    },
+    data: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'List'
+        }
+    ]
+})
+
 const listSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -20,11 +32,14 @@ const cardSchema = new mongoose.Schema({
     },
     list: {
         type: mongoose.Schema.Types.ObjectId,
+        required: true,
         ref: 'List'
     }
 })
 
+
+let Board = mongoose.model('Board', boardSchema)
 let List = mongoose.model('List', listSchema)
 let Card = mongoose.model('Card', cardSchema)
 
-module.exports = { List, Card }
+module.exports = { List, Card, Board }

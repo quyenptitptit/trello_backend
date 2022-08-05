@@ -8,26 +8,40 @@ function ContentElement({ createList, load }) {
 
     const [inputList, setInputList] = useState('')
     const [isClickAddList, setIsClickAddList] = useState(false)
+
     const handleOnChangeAddList = (e) => {
         setInputList(e.target.value)
     }
 
+    const handleOnClickAddList = () => {
+        setIsClickAddList(!isClickAddList);
+    }
+
     const handleSubmitAddList = async e => {
-        if (inputList !== '') {
-            e.preventDefault()
-            const newList = {
-                title: inputList,
-                card: []
-            }
-            await createList(newList)
-            setInputList('')
-            setIsClickAddList(!isClickAddList)
-            await load()
+        // if (inputList !== '') {
+        //     e.preventDefault()
+        //     const newList = {
+        //         title: inputList,
+        //         card: []
+        //     }
+        //     await createList(newList)
+        //     setInputList('')
+        //     setIsClickAddList(!isClickAddList)
+        //     await load()
+        // }
+        // else {
+        //     alert('please write list')
+        //     load()
+        // }
+        e.preventDefault()
+        const newList = {
+            title: inputList,
+            card: []
         }
-        else {
-            alert('please write list')
-            load()
-        }
+        await createList(newList)
+        setInputList('')
+        setIsClickAddList(!isClickAddList)
+        await load()
     }
 
 
@@ -38,6 +52,7 @@ function ContentElement({ createList, load }) {
                 <form className='add_list-form' onSubmit={handleSubmitAddList}>
                     <input
                         type='text'
+                        autoFocus
                         value={inputList}
                         onChange={handleOnChangeAddList}
                         placeholder='Enter a list title...'
@@ -46,7 +61,7 @@ function ContentElement({ createList, load }) {
                 </form>
                 :
                 <div className='add_list-false'>
-                    <p onClick={() => setIsClickAddList(!isClickAddList)}><GrAdd /> Add List</p>
+                    <p onClick={handleOnClickAddList}><GrAdd /> Add List</p>
                 </div>
             }
         </div>
