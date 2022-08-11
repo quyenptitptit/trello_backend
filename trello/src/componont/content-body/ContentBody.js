@@ -7,15 +7,30 @@ import axios from 'axios'
 
 
 
-function ContentBody({lists, setLists, boards, setBoards, load}) {
+function ContentBody() {
   const BOARD_URL = 'http://localhost:8000/api/board'
   const LIST_URL = 'http://localhost:8000/api/list'
-  const CARD_URL = 'http://localhost:8000/api/card'
+  const [lists, setLists] = useState([])
 
-  const createList = async newList => {
+  const load = async () => {
     try {
-      const res = await axios.post(`${LIST_URL}`, newList)
-      // setLists([...lists, res.data])
+      let res = await axios.get(`${LIST_URL}`)
+      const board = res.data
+      setLists(board)
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
+
+  useEffect(() => {
+    load()
+  }, [])
+
+  const addList = async (newList) => {
+    try {
+      let res = await axios.post(`${LIST_URL}`, newList)
+      setLists([...lists, res.data])
       return res.data
     }
     catch (e) {
@@ -23,88 +38,214 @@ function ContentBody({lists, setLists, boards, setBoards, load}) {
     }
   }
 
-  const removeList = async id => {
+  const updateList = async (id, updatedTitle) => {
     try {
-      const res = await axios.delete(`${LIST_URL}/${id}`)
-      setLists(lists.filter(list => list._id !== id))
-      return res.data
-    }
-    catch (e) {
-      console.log(e)
-    }
-  }
-
-  const updateList = async (id, updtedTitle) => {
-    try {
-      await axios.put(`${LIST_URL}/${id}`, { title: updtedTitle })
-      const updatedLists = lists.map(list => {
-        if (list._id === id) {
-          return { ...list, title: updtedTitle };
+      await axios.put(`${LIST_URL}/${id}`, { title: updatedTitle })
+      const newList = lists.map(list => {
+        if(list._id === id){
+          return { ...list, title: updatedTitle }
         }
-        return list;
-      });
-      setLists(updatedLists);
-    }
-    catch (e) {
-      console.log(e)
-    }
-  };
-
-  const addCard = async newCard => {
-    try {
-      const res = await axios.post(`${CARD_URL}`, newCard)
-      return res.data
-    }
-    catch (e) {
-      console.log(e)
-    }
-  }
-
-  const removeCard = async id => {
-    try {
-      const res = await axios.delete(`${CARD_URL}/${id}`)
-      const remove = lists.map(list => {
-        const newCard = list.card.filter(card => card.id !== id)
-        return { ...list, card: newCard }
+        return list
       })
-      setLists(remove)
-      return res.data
+      setLists(newList)
+      console.log(lists)
     }
     catch (e) {
       console.log(e)
     }
   }
 
-  const updateCard = async (id, newNameCard) => {
+  const deleteList = async (id) => {
     try {
-      await axios.put(`${CARD_URL}/${id}`, { nameCard: newNameCard })
-      const updatedCard = lists.map(list => {
-        const newCard = list.card.map(card => {
-          if (card.id === id)
-            return { ...card, nameCard: newNameCard }
-          return card
-        })
-        return { ...list, card: newCard }
+      await axios.delete(`${LIST_URL}/${id}`)
+      setLists(lists.filter(list => list._id !== id))
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
+
+  let dragCard
+  let dropCard
+  let dragList
+  let dropList
+  let topShadow
+  let leftShadow
+  let topClone
+  let leftClone
+  let isDown = false
+
+
+  const mouseDown = async (e) => {
+    isDown = true
+    // mouse down card
+    if (e.target.matches('.card') || e.target.matches('.card_title-text-p')) {
+      dragCard = e.target.closest('.card');
+
+      if (dragCard) {
+        const rectDragCard = dragCard.getBoundingClientRect();
+        topShadow = e.clientY - rectDragCard.top
+        leftShadow = e.clientX - rectDragCard.left
+
+        let shadow = dragCard.cloneNode(true)
+        shadow.id = 'shadow'
+        shadow.style.display = 'none'
+        document.body.appendChild(shadow)
+
+        let placeholder = document.createElement('div')
+        placeholder.id = 'placeholder'
+        placeholder.style.display = 'none'
+        document.body.appendChild(placeholder)
+      }
+    }
+
+
+    //mouse down list
+    if (e.target.matches('#list_title-text-p') || e.target.matches('.list_title')) {
+      let dragTitle = e.target.closest('.list_title')
+      if (dragTitle) {
+        dragList = dragTitle.parentNode
       }
 
-      )
-      setLists(updatedCard)
-    }
-    catch (e) {
-      console.log(e)
+      if (dragList) {
+        const rectDragList = dragList.getBoundingClientRect()
+        topClone = e.clientY - rectDragList.top
+        leftClone = e.clientX - rectDragList.left
+
+        let clone = dragList.cloneNode(true)
+        clone.id = 'clone'
+        clone.style.display = 'none'
+        clone.style.height = dragList.getBoundingClientRect().height + 'px'
+        document.querySelector('body').appendChild(clone)
+
+        let space = document.createElement('div')
+        space.id = 'space'
+        space.style.display = 'none'
+        space.style.height = dragList.getBoundingClientRect().height + 'px'
+        space.style.top = dragList.getBoundingClientRect().top + 'px'
+        document.querySelector('body').appendChild(space)
+      }
     }
   }
 
+  const mouseMove = async (e) => {
+    let shadow = document.getElementById('shadow')
+    let placeholder = document.getElementById('placeholder')
+    let clone = document.getElementById('clone')
+    let space = document.getElementById('space')
+    if (isDown) {
+      //mouse move card
+      if (dragCard) {
+        dragCard.style.display = 'none'
+      }
 
+      dropCard = e.target.closest('.card')
 
-  const renderList = lists.map((list, idx) => (
-    <List load={load} key={idx} list={list} addCard={addCard} updateList={updateList} updateCard={updateCard} removeList={removeList} removeCard={removeCard} boards={boards} setBoards={setBoards} />
-  ))
+      if (dragCard) {
+        const bodyList = e.target.closest('.list')
+        if (bodyList && !bodyList.querySelector('.render_card').hasChildNodes() && dragCard) {
+          bodyList.querySelector('.render_card').prepend(placeholder)
+          bodyList.querySelector('.render_card').prepend(dragCard)
+        }
+      }
+
+      if (shadow && placeholder) {
+        shadow.style.display = 'flex'
+        shadow.style.top = e.clientY - topShadow + 'px'
+        shadow.style.left = e.clientX - leftShadow + 'px'
+
+        placeholder.style.display = 'block'
+
+        if (dropCard) {
+          placeholder.style.top = dropCard.getBoundingClientRect().top - document.querySelector('.content').getBoundingClientRect().top - 15 + 'px'
+          placeholder.style.left = dropCard.getBoundingClientRect().left - 25 + 'px'
+          if (isTop(e.clientY, dropCard)) {
+            dropCard.parentNode.insertBefore(dragCard, dropCard)
+            dropCard.parentNode.insertBefore(placeholder, dropCard)
+          }
+          else {
+            dropCard.parentNode.insertBefore(dragCard, dropCard.nextSibling)
+            dropCard.parentNode.insertBefore(placeholder, dropCard.nextSibling)
+          }
+
+        }
+      }
+
+      //mouse move list
+      if (dragList) {
+        dragList.style.display = 'none'
+      }
+      dropList = e.target.closest('.list')
+
+      if (clone && space) {
+        clone.style.display = 'block'
+        clone.style.top = e.clientY - topClone + 'px'
+        clone.style.left = e.clientX - leftClone + 'px'
+
+        space.style.display = 'block'
+
+        if (dropList) {
+          if (isLeft(e.clientX, dropList)) {
+            dropList.parentNode.insertBefore(dragList, dropList)
+            dropList.parentNode.insertBefore(space, dropList)
+          }
+          else {
+            dropList.parentNode.insertBefore(dragList, dropList.nextSibling)
+            dropList.parentNode.insertBefore(space, dropList.nextSibling)
+          }
+        }
+      }
+    }
+  }
+
+  const mouseUp = async (e) => {
+    e.preventDefault()
+    isDown = false
+    // mouse up card
+    if (dragCard) {
+      dragCard.style.display = 'flex'
+      let shadow = document.getElementById('shadow')
+      let placeholder = document.getElementById('placeholder')
+      if (shadow) {
+        shadow.remove()
+      }
+      if (placeholder) {
+        placeholder.remove()
+      } 
+    }
+
+    //mouse up list
+    if (dragList) {
+      dragList.style.display = 'block'
+      let clone = document.getElementById('clone')
+      let space = document.getElementById('space')
+      if (clone) {
+        clone.remove()
+      }
+      if (space) {
+        space.remove()
+      }
+    }
+  }
+
+  const isTop = (clientY, element) => {
+    const rect = element.getBoundingClientRect()
+    return clientY - rect.top - rect.height / 2 < 0 ? true : false
+  }
+
+  const isLeft = (clientX, element) => {
+    const rect = element.getBoundingClientRect()
+    return clientX - rect.left - rect.width / 2 < 0 ? true : false
+  }
 
   return (
-    <div className='content_body'>
-      <div className='render_list'>{renderList}</div>
-      <AddList load={load} createList={createList} />
+    <div onMouseDown={mouseDown} onMouseMove={mouseMove} onMouseUp={mouseUp} className='content_body'>
+      <div className='render_list'>
+        {lists.map((list, idx) => (
+          <List key={idx} List={list} updateList={updateList} deleteList={deleteList} />
+        ))}
+      </div>
+      <AddList addList={addList} />
     </div>
   )
 }

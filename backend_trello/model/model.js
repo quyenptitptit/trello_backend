@@ -30,9 +30,8 @@ const cardSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    list: {
+    listId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'List'
     }
 })

@@ -1,55 +1,85 @@
-import { React, useState } from 'react'
-// import { v4 as uuidv4 } from 'uuid'
+import { React, useState, useEffect } from 'react'
 import { TiDelete } from "@react-icons/all-files/ti/TiDelete"
-import { GrAdd } from "@react-icons/all-files/gr/GrAdd"
 import './List.css'
 import Card from '../card/Card'
+import AddCard from '../add-card/AddCard'
+import axios from 'axios'
 
 
 
-function List({ list, load, addCard, updateList, updateCard, removeList, removeCard }) {
-  const [inputCard, setInputCard] = useState('')
-  const [title, setTitle] = useState(list.title)
+function List({ List, updateList, deleteList }) {
+  const LIST_URL = 'http://localhost:8000/api/list'
+  const CARD_URL = 'http://localhost:8000/api/card'
+
+  const [list, setList] = useState([])
+  const [title, setTitle] = useState(List.title)
   const [isEditing, setIsEditing] = useState(false)
-  const [isClickAddCard, setIsClickAddCard] = useState(false)
 
+  const getList = async () => {
+    let res = await axios.get(`${LIST_URL}/${List._id}`)
+    setList(res.data.card)
+  }
+
+  useEffect(() => {
+    getList()
+  }, [])
+
+
+  //list
   const handleChangeUpdateList = (e) => {
     setTitle(e.target.value)
   }
 
-  const handleChangeAddCard = (e) => {
-    setInputCard(e.target.value)
-  }
-
-  const handleSubmitAddCard = async e => {
-    e.preventDefault()
-    const newCard = {
-      nameCard: inputCard,
-      list: list._id
-    }
-    await addCard(newCard)
-    setInputCard('')
-    setIsClickAddCard(!isClickAddCard)
-    await load()
-  }
-
   const handleClickUpdateList = (e) => {
-    e.preventDefault()
-    updateList(list._id, title)
+    updateList(List._id, title)
     setIsEditing(!isEditing)
   }
 
-  const handleClickDeleteList = (e) => {
-    removeList(list._id)
+  const handleClickDeleteList = () => {
+    deleteList(List._id)
   }
 
-  const renderCard = list.card.map((card, idx) => (
-    <Card key={idx} load={load} card={card} updateCard={updateCard} removeCard={removeCard} />
-  ))
+  //card
+  const addCard = async (newCard) => {
+    try {
+      let res = await axios.post(`${CARD_URL}`, newCard)
+      const card = [...list, res.data]
+      setList(card)
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
 
+  const updateCard = async (id, updatedCard) => {
+    try {
+      await axios.put(`${CARD_URL}/${id}`, { nameCard: updatedCard })
+      const updateList = list.map(card => {
+        if (card._id === id) {
+          return { ...card, nameCard: updatedCard }
+        }
+        return card
+      })
+      setList(updateList)
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
+
+  const deleteCard = async (id) => {
+    try {
+      await axios.delete(`${CARD_URL}/${id}`)
+      const newList = list.filter(card => card._id !== id)
+      setList(newList)
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
 
   return (
-    <div id={list._id} className='list'>
+    <div id={List._id} className='list'>
       {isEditing ?
         <div className="list_title">
           <form className="list_form-update" onSubmit={handleClickUpdateList}>
@@ -60,7 +90,7 @@ function List({ list, load, addCard, updateList, updateCard, removeList, removeC
         :
         <div className='list_title'>
           <div className='list_title-text'>
-            <p id='list_title-text-p' onClick={handleClickUpdateList} value={list.title}>{list.title}</p>
+            <p id='list_title-text-p' onClick={handleClickUpdateList} value={List.title}>{List.title}</p>
           </div>
           <div className='list_title-icon'>
             <button onClick={handleClickDeleteList}><TiDelete className='list_title-icon-delete' /></button>
@@ -68,23 +98,13 @@ function List({ list, load, addCard, updateList, updateCard, removeList, removeC
         </div>
       }
 
-      <div className='render_card'>{renderCard}</div>
+      <div className='render_card'>
+        {list.map((card, idx) => (
+          <Card key={idx} card={card} updateCard={updateCard} deleteCard={deleteCard} />
+        ))}
+      </div>
 
-      {isClickAddCard ?
-        <form className='list_form' onSubmit={handleSubmitAddCard}>
-          <input type='text'
-            value={inputCard}
-            onChange={handleChangeAddCard}
-            placeholder='Enter a title for this tag...'
-            className='list_input-addCard'
-            autoFocus /><br />
-          <button className='list_btn-addCard'>Add card</button>
-        </form>
-        :
-        <div>
-          <p className='add_card-false' onClick={() => setIsClickAddCard(!isClickAddCard)} ><GrAdd /> Add Card</p>
-        </div>
-      }
+      <AddCard addCard={addCard} listId={List._id} />
     </div>
   )
 }

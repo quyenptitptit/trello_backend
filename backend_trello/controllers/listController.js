@@ -24,7 +24,7 @@ const listController = {
 
     getAList: async (req, res) => {
         try {
-            const list = await List.findById(req.params.id)
+            const list = await List.findById(req.params.id).populate('card')
             res.status(200).json(list)
         }
         catch (e) {
@@ -34,7 +34,7 @@ const listController = {
 
     getList: async (req, res) => {
         try {
-            const lists = await List.find().populate('card')
+            const lists = await List.find()
             res.status(200).json(lists)
         }
         catch (e) {
@@ -55,9 +55,12 @@ const listController = {
 
     deleteList: async (req, res) => {
         try {
-            await Card.updateMany(
-                { list: req.params.id },
-                { list: null }
+            // await Card.updateMany(
+            //     { list: req.params.id },
+            //     { list: null }
+            // )
+            await Card.deleteMany(
+                { list: req.params.id }
             )
             await Board.updateMany(
                 { data: req.params.id },

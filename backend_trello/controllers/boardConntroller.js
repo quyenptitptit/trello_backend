@@ -14,8 +14,8 @@ const boardController = {
 
     getBoard: async(req, res) => {
         try{
-            const board = await Board.find()
-            res.status(200).json(board)
+            const board = await Board.find().populate('data')
+            res.status(200).json(board[0].data)
         }
         catch(e) {
             res.status(500).json(e)

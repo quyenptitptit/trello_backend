@@ -6,8 +6,8 @@ const cardController = {
         try {
             const newCard = new Card(req.body)
             const savedCard = await newCard.save()
-            if (req.body.list) {
-                const list = List.findById(req.body.list)
+            if (req.body.listId) {
+                const list = List.findById(req.body.listId)
                 await list.updateOne({ $push: { card: savedCard } })
             }
             res.status(200).json(savedCard)
