@@ -14,7 +14,7 @@ function ContentBody() {
 
   const load = async () => {
     try {
-      let res = await axios.get(`${LIST_URL}`)
+      let res = await axios.get(`${BOARD_URL}`)
       const board = res.data
       setLists(board)
     }
@@ -41,13 +41,13 @@ function ContentBody() {
   const updateList = async (id, updatedTitle) => {
     try {
       await axios.put(`${LIST_URL}/${id}`, { title: updatedTitle })
-      const newList = lists.map(list => {
-        if(list._id === id){
-          return { ...list, title: updatedTitle }
-        }
-        return list
-      })
-      setLists(newList)
+      // const newList = lists.map(list => {
+      //   if(list._id === id){
+      //     return { ...list, title: updatedTitle }
+      //   }
+      //   return list
+      // })
+      // setLists(newList)
       console.log(lists)
     }
     catch (e) {
@@ -58,7 +58,26 @@ function ContentBody() {
   const deleteList = async (id) => {
     try {
       await axios.delete(`${LIST_URL}/${id}`)
-      setLists(lists.filter(list => list._id !== id))
+      document.getElementById(id).remove()
+      // setLists(lists.filter(list => list._id !== id))
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
+
+  const updateDataList = async (id, newCard) => {
+    try {
+      await axios.put(`${LIST_URL}/${id}`, { card: newCard })
+    }
+    catch (e) {
+      console.log(e)
+    }
+  } 
+
+  const updateDataBoard = async (newList) => {
+    try {
+      await axios.put(`${BOARD_URL}`, newList)
     }
     catch (e) {
       console.log(e)
@@ -74,13 +93,15 @@ function ContentBody() {
   let topClone
   let leftClone
   let isDown = false
-
+  let fromListId
+  let targetListId
 
   const mouseDown = async (e) => {
     isDown = true
     // mouse down card
-    if (e.target.matches('.card') || e.target.matches('.card_title-text-p')) {
+    if (e.target.matches('.card') || e.target.matches('.card_title-text')) {
       dragCard = e.target.closest('.card');
+      fromListId = dragCard.closest('.list').id
 
       if (dragCard) {
         const rectDragCard = dragCard.getBoundingClientRect();
@@ -90,11 +111,13 @@ function ContentBody() {
         let shadow = dragCard.cloneNode(true)
         shadow.id = 'shadow'
         shadow.style.display = 'none'
+        shadow.style.height = dragCard.getBoundingClientRect().height - 20 + 'px'
         document.body.appendChild(shadow)
 
         let placeholder = document.createElement('div')
         placeholder.id = 'placeholder'
         placeholder.style.display = 'none'
+        placeholder.style.height = dragCard.getBoundingClientRect().height - 20 + 'px'
         document.body.appendChild(placeholder)
       }
     }
@@ -144,6 +167,7 @@ function ContentBody() {
       if (dragCard) {
         const bodyList = e.target.closest('.list')
         if (bodyList && !bodyList.querySelector('.render_card').hasChildNodes() && dragCard) {
+          targetListId = bodyList.id
           bodyList.querySelector('.render_card').prepend(placeholder)
           bodyList.querySelector('.render_card').prepend(dragCard)
         }
@@ -157,6 +181,7 @@ function ContentBody() {
         placeholder.style.display = 'block'
 
         if (dropCard) {
+          targetListId = dropCard.closest('.list').id
           placeholder.style.top = dropCard.getBoundingClientRect().top - document.querySelector('.content').getBoundingClientRect().top - 15 + 'px'
           placeholder.style.left = dropCard.getBoundingClientRect().left - 25 + 'px'
           if (isTop(e.clientY, dropCard)) {
@@ -185,6 +210,7 @@ function ContentBody() {
         space.style.display = 'block'
 
         if (dropList) {
+          targetListId = dropList.closest('.list').id
           if (isLeft(e.clientX, dropList)) {
             dropList.parentNode.insertBefore(dragList, dropList)
             dropList.parentNode.insertBefore(space, dropList)
@@ -200,7 +226,6 @@ function ContentBody() {
 
   const mouseUp = async (e) => {
     e.preventDefault()
-    isDown = false
     // mouse up card
     if (dragCard) {
       dragCard.style.display = 'flex'
@@ -212,6 +237,12 @@ function ContentBody() {
       if (placeholder) {
         placeholder.remove()
       } 
+      const fromListData = [...document.getElementById(fromListId)
+        .childNodes[1].childNodes].map(node => node.id)
+      const targetListData = [...document.getElementById(targetListId)
+        .childNodes[1].childNodes].map(node => node.id)
+      updateDataList(fromListId, fromListData)
+      updateDataList(targetListId, targetListData)
     }
 
     //mouse up list
@@ -225,7 +256,13 @@ function ContentBody() {
       if (space) {
         space.remove()
       }
+      const listData = [...document.getElementById(targetListId)
+        .parentNode.childNodes].map((node) => node.id)
+      updateDataBoard(listData)
     }
+    isDown = false
+    // fromListId = null
+    // targetListId = null
   }
 
   const isTop = (clientY, element) => {

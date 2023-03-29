@@ -1,4 +1,4 @@
-import { React, useState } from 'react'
+import { React, useState, memo } from 'react'
 import './AddList.css'
 import { GrAdd } from "@react-icons/all-files/gr/GrAdd"
 
@@ -39,4 +39,4 @@ function ContentElement({ addList }) {
     )
 }
 
-export default ContentElement
+export default memo(ContentElement)

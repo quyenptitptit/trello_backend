@@ -60,7 +60,7 @@ const listController = {
             //     { list: null }
             // )
             await Card.deleteMany(
-                { list: req.params.id }
+                { listId: req.params.id }
             )
             await Board.updateMany(
                 { data: req.params.id },

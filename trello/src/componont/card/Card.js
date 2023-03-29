@@ -1,8 +1,7 @@
-import { React, useState } from 'react'
+import { React, useState, memo } from 'react'
 import './Card.css'
 import { RiPencilFill } from "@react-icons/all-files/ri/RiPencilFill"
 import { RiDeleteBin6Line } from "@react-icons/all-files/ri/RiDeleteBin6Line"
-
 
 
 function Card({ card, updateCard, deleteCard }) {
@@ -23,7 +22,7 @@ function Card({ card, updateCard, deleteCard }) {
             {checked ?
             <>
             <div className='card_title-text'>
-                <p className='card_title-text-p'>{card.nameCard}</p>
+                {nameCard}
             </div>
             <div className='card_title-icon'>
                 <button className='card_btn' onClick={() => setChecked(!checked)} ><RiPencilFill className='card-icon-update' /></button>
@@ -32,12 +31,12 @@ function Card({ card, updateCard, deleteCard }) {
             </>
             :
             <form className='card_form-update' onSubmit={handleClickUpdateCard}>
-                <input type='text' onChange={(e) => setNameCard(e.target.value)} value={nameCard} className='card_input-update' autoFocus />
-                <button className='card_btn-save'>Save</button>
+                <textarea rows='4' type='text' onChange={(e) => setNameCard(e.target.value)} value={nameCard} className='card_input-update' autoFocus />
+                <button type='submit' className='card_btn-save'>Save</button>
             </form>
             }
         </div>
     )
 }
 
-export default Card
+export default memo(Card)

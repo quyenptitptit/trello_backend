@@ -41,20 +41,3 @@
     background-color: rgb(126, 177, 221);
 }
 
-#clone {
-    width: 350px;
-    position: absolute;
-    z-index: 1000;
-    pointer-events: none;
-    height: fit-content;
-    background-color: rgba(238, 237, 237);
-}
-
-#space {
-    background-color: rgba(0, 0, 0, 0.5);
-    width: 350px;
-    pointer-events: none;
-    user-select: none;
-    border-radius: 5px;
-    margin-right: 10px;
-}

@@ -13,13 +13,15 @@
     font-size: 110%;
     padding: 10px;
     align-items: center;
-    height: 40px;
+    min-height: 40px;
     padding: 10px;
     word-wrap: break-word
 }
 
-.card_title p {
-    word-break: break-word;
+.card_title-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 215px;
 }
 
 .card_btn{
@@ -37,18 +39,20 @@
 .card_form-update {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
     box-sizing: border-box;
     width: 100%;
-    margin-top: 10px;
+    align-items: center;
 }
 
 .card_input-update {
     padding: 5px;
-    border: 1px solid #51ade2;
     border-radius: 5px;
     margin-right: 5px;
     width: 220px;
+    font-size: 110%;
+    /* word-wrap: break-word; */
+    box-sizing: border-box;
+    /* overflow-wrap: break-word; */
 }
 
 .card_btn-save{ 
@@ -56,5 +60,14 @@
     border: none;
     background-color: #026AA7;
     color: white;
-    border-radius: 5px
+    border-radius: 5px;
+    height: 40px;
+    align-items: center;
+}
+
+textarea {
+    /* overflow: hidden; */
+    overflow-wrap: break-word;
+    resize: none;
+    height: fit-content;
 }

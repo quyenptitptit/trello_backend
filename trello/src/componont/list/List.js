@@ -1,10 +1,9 @@
-import { React, useState, useEffect } from 'react'
+import { React, useState, useEffect, memo } from 'react'
 import { TiDelete } from "@react-icons/all-files/ti/TiDelete"
 import './List.css'
 import Card from '../card/Card'
 import AddCard from '../add-card/AddCard'
 import axios from 'axios'
-
 
 
 function List({ List, updateList, deleteList }) {
@@ -54,13 +53,13 @@ function List({ List, updateList, deleteList }) {
   const updateCard = async (id, updatedCard) => {
     try {
       await axios.put(`${CARD_URL}/${id}`, { nameCard: updatedCard })
-      const updateList = list.map(card => {
-        if (card._id === id) {
-          return { ...card, nameCard: updatedCard }
-        }
-        return card
-      })
-      setList(updateList)
+      // const updateList = list.map(card => {
+      //   if (card._id === id) {
+      //     return { ...card, nameCard: updatedCard }
+      //   }
+      //   return card
+      // })
+      // setList(updateList)
     }
     catch (e) {
       console.log(e)
@@ -70,8 +69,9 @@ function List({ List, updateList, deleteList }) {
   const deleteCard = async (id) => {
     try {
       await axios.delete(`${CARD_URL}/${id}`)
-      const newList = list.filter(card => card._id !== id)
-      setList(newList)
+      // const newList = list.filter(card => card._id !== id)
+      // setList(newList)
+      document.getElementById(id).remove()
     }
     catch (e) {
       console.log(e)
@@ -90,23 +90,21 @@ function List({ List, updateList, deleteList }) {
         :
         <div className='list_title'>
           <div className='list_title-text'>
-            <p id='list_title-text-p' onClick={handleClickUpdateList} value={List.title}>{List.title}</p>
+            <p id='list_title-text-p' onClick={handleClickUpdateList} value={List.title}>{title}</p>
           </div>
           <div className='list_title-icon'>
             <button onClick={handleClickDeleteList}><TiDelete className='list_title-icon-delete' /></button>
           </div>
         </div>
       }
-
       <div className='render_card'>
         {list.map((card, idx) => (
           <Card key={idx} card={card} updateCard={updateCard} deleteCard={deleteCard} />
         ))}
       </div>
-
       <AddCard addCard={addCard} listId={List._id} />
     </div>
   )
 }
 
-export default List
+export default memo(List)

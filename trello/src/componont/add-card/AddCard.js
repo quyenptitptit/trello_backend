@@ -1,4 +1,4 @@
-import { React, useState } from 'react'
+import { React, useState, memo } from 'react'
 import '../card/Card.css'
 import { GrAdd } from "@react-icons/all-files/gr/GrAdd"
 
@@ -37,4 +37,4 @@ function AddCard({ addCard, listId }) {
     )
 }
 
-export default AddCard
+export default memo(AddCard)
